@@ -20,3 +20,8 @@ MESA_VK_DEVICE_SELECT=list vulkaninfo --summary | sed -n '1,120p'
 
 # Simple smoke-test app
 vkcube  # should open a WSLg window and run via Dozen
+
+
+# ~/.bashrc (append these) make it consistent
+export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/dzn_icd.x86_64.json
+export MESA_VK_DEVICE_SELECT=10de:2805    # NVIDIA (from your list)
