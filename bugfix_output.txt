@@ -1,0 +1,136 @@
+yrobotics@DESKTOP-3JVDMOE:~$ ls /usr/share/vulkan/icd.d | grep -i dzn || echo "NO_DZN_ICD"
+find /usr -name "libvulkan_dzn.so" 2>/dev/null || echo "NO_DZN_LIB"
+vulkaninfo --summary | sed -n '1,120p'
+dzn_icd.x86_64.json
+/usr/lib/x86_64-linux-gnu/libvulkan_dzn.so
+NO_DZN_LIB
+WARNING: dzn is not a conformant Vulkan implementation, testing use only.
+WARNING: dzn is not a conformant Vulkan implementation, testing use only.
+==========
+VULKANINFO
+==========
+
+Vulkan Instance Version: 1.3.204
+
+
+Instance Extensions: count = 21
+-------------------------------
+VK_EXT_acquire_drm_display             : extension revision 1
+VK_EXT_acquire_xlib_display            : extension revision 1
+VK_EXT_debug_report                    : extension revision 10
+VK_EXT_debug_utils                     : extension revision 2
+VK_EXT_direct_mode_display             : extension revision 1
+VK_EXT_display_surface_counter         : extension revision 1
+VK_EXT_headless_surface                : extension revision 1
+VK_EXT_swapchain_colorspace            : extension revision 5
+VK_KHR_device_group_creation           : extension revision 1
+VK_KHR_display                         : extension revision 23
+VK_KHR_external_fence_capabilities     : extension revision 1
+VK_KHR_external_memory_capabilities    : extension revision 1
+VK_KHR_external_semaphore_capabilities : extension revision 1
+VK_KHR_get_display_properties2         : extension revision 1
+VK_KHR_get_physical_device_properties2 : extension revision 2
+VK_KHR_get_surface_capabilities2       : extension revision 1
+VK_KHR_surface                         : extension revision 25
+VK_KHR_surface_protected_capabilities  : extension revision 1
+VK_KHR_wayland_surface                 : extension revision 6
+VK_KHR_xcb_surface                     : extension revision 6
+VK_KHR_xlib_surface                    : extension revision 6
+
+Instance Layers: count = 3
+--------------------------
+VK_LAYER_INTEL_nullhw       INTEL NULL HW                1.1.73   version 1
+VK_LAYER_MESA_device_select Linux device selection layer 1.4.303  version 1
+VK_LAYER_MESA_overlay       Mesa Overlay layer           1.4.303  version 1
+
+Devices:
+========
+GPU0:
+        apiVersion         = 4202801 (1.2.305)
+        driverVersion      = 104857607 (0x6400007)
+        vendorID           = 0x10de
+        deviceID           = 0x2805
+        deviceType         = PHYSICAL_DEVICE_TYPE_DISCRETE_GPU
+        deviceName         = Microsoft Direct3D12 (NVIDIA GeForce RTX 4060 Ti)
+        driverID           = UNKNOWN_VkDriverId_value23
+        driverName         = Dozen
+        driverInfo         = Mesa 25.0.7 - kisak-mesa PPA
+        conformanceVersion = 0.0.0.0
+        deviceUUID         = 0e6bb55c-e2f1-c224-c3e9-131fd2fc2fbd
+        driverUUID         = cd3d565c-db1f-8637-f1d4-9ba7fd496aed
+GPU1:
+        apiVersion         = 4210993 (1.4.305)
+        driverVersion      = 1 (0x0001)
+        vendorID           = 0x10005
+        deviceID           = 0x0000
+        deviceType         = PHYSICAL_DEVICE_TYPE_CPU
+        deviceName         = llvmpipe (LLVM 15.0.7, 256 bits)
+        driverID           = DRIVER_ID_MESA_LLVMPIPE
+        driverName         = llvmpipe
+        driverInfo         = Mesa 25.0.7 - kisak-mesa PPA (LLVM 15.0.7)
+        conformanceVersion = 1.3.1.1
+        deviceUUID         = 6d657361-3235-2e30-2e37-202d206b6900
+        driverUUID         = 6c6c766d-7069-7065-5555-494400000000
+GPU2:
+        apiVersion         = 4202801 (1.2.305)
+        driverVersion      = 104857607 (0x6400007)
+        vendorID           = 0x8086
+        deviceID           = 0x4682
+        deviceType         = PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU
+        deviceName         = Microsoft Direct3D12 (Intel(R) UHD Graphics 730)
+        driverID           = UNKNOWN_VkDriverId_value23
+        driverName         = Dozen
+        driverInfo         = Mesa 25.0.7 - kisak-mesa PPA
+        conformanceVersion = 0.0.0.0
+        deviceUUID         = 0011227f-a627-f155-4eed-d0ca5ab42002
+        driverUUID         = cd3d565c-db1f-8637-f1d4-9ba7fd496aed
+
+
+
+
+
+
+###############################################################  1
+
+yrobotics@DESKTOP-3JVDMOE:~$ # list candidates by name/vendor:device
+MESA_VK_DEVICE_SELECT=list vulkaninfo | sed -n '1,120p'
+
+# pick the NVIDIA by vendor:device (10de:2805 from your output)
+export MESA_VK_DEVICE_SELECT=10de:2805
+
+# (optional) force the dzn ICD only
+export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/dzn_icd.x86_64.json
+WARNING: dzn is not a conformant Vulkan implementation, testing use only.
+WARNING: dzn is not a conformant Vulkan implementation, testing use only.
+selectable devices:
+  GPU 0: 10005:0 "llvmpipe (LLVM 15.0.7, 256 bits)" CPU
+  GPU 1: 10de:2805 "Microsoft Direct3D12 (NVIDIA GeForce RTX 4060 Ti)" discrete GPU
+  GPU 2: 8086:4682 "Microsoft Direct3D12 (Intel(R) UHD Graphics 730)" integrated GPU
+yrobotics@DESKTOP-3JVDMOE:~$ cat /usr/share/vulkan/icd.d/dzn_icd.x86_64.json
+{
+    "ICD": {
+        "api_version": "1.1.305",
+        "library_path": "/usr/lib/x86_64-linux-gnu/libvulkan_dzn.so"
+    },
+    "file_format_version": "1.0.0"
+}yrobotics@DESKTOP-3JVDMOE:~$# Verify ICD is dzn and NVIDIA is first devicee
+echo "== ICDs =="; ls -1 /usr/share/vulkan/icd.d
+MESA_VK_DEVICE_SELECT=list vulkaninfo --summary | sed -n '1,120p'
+
+# Simple smoke-test app
+vkcube  # should open a WSLg window and run via Dozen
+== ICDs ==
+dzn_icd.x86_64.json
+intel_hasvk_icd.x86_64.json
+intel_icd.x86_64.json
+lvp_icd.x86_64.json
+radeon_icd.x86_64.json
+virtio_icd.x86_64.json
+WARNING: dzn is not a conformant Vulkan implementation, testing use only.
+WARNING: dzn is not a conformant Vulkan implementation, testing use only.
+selectable devices:
+  GPU 0: 10de:2805 "Microsoft Direct3D12 (NVIDIA GeForce RTX 4060 Ti)" discrete GPU
+  GPU 1: 8086:4682 "Microsoft Direct3D12 (Intel(R) UHD Graphics 730)" integrated GPU
+WARNING: dzn is not a conformant Vulkan implementation, testing use only.
+WARNING: dzn is not a conformant Vulkan implementation, testing use only.
+Selected GPU 0: Microsoft Direct3D12 (NVIDIA GeForce RTX 4060 Ti), type: 2
