@@ -1,0 +1,22 @@
+sudo add-apt-repository -y ppa:kisak/turtle
+sudo apt update
+sudo apt full-upgrade -y
+sudo apt install -y mesa-vulkan-drivers vulkan-tools
+
+##################################### 1
+
+
+# list candidates by name/vendor:device
+MESA_VK_DEVICE_SELECT=list vulkaninfo | sed -n '1,120p'
+
+# pick the NVIDIA by vendor:device (10de:2805 from your output)
+export MESA_VK_DEVICE_SELECT=10de:2805
+
+# (optional) force the dzn ICD only
+export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/dzn_icd.x86_64.json
+# Verify ICD is dzn and NVIDIA is first device
+echo "== ICDs =="; ls -1 /usr/share/vulkan/icd.d
+MESA_VK_DEVICE_SELECT=list vulkaninfo --summary | sed -n '1,120p'
+
+# Simple smoke-test app
+vkcube  # should open a WSLg window and run via Dozen
