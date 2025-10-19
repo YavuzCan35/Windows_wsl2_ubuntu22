@@ -5,3 +5,5 @@ bash -lc "cat /home/deneme1/test.txt"
 bash -lc " python /home/deneme1/emreylekod/webscrapmain.py --perform-lookup --company 'thompsonsuk'"
 bash -lc "conda acitvate webscarpai" #/miniconda3
 wsl -d Ubuntu-22.04 bash -lc "conda acitvate webscarpai" #/miniconda3 
+bash -lc 'python3 -c "print(\"This mimics python < py ... py style\"); [print(f\"Line {i}\") for i in range(3)]"'
+
